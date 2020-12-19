@@ -1,0 +1,12 @@
+Changelog
+==============
+
+
+20201218
+---------
+* Set up Gradle with AWS dependencies and played with SDK
+
+
+Next Steps
+----------
+* Create a model for what happens in an "updates.Update"

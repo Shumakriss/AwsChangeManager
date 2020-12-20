@@ -1,10 +1,12 @@
 package updates;
 
-public class ExampleResource implements Identifiable, Deployable, Validatable {
+import java.util.Map;
+
+public class ExampleResource implements Identifiable, Deployable, Validatable, Reversible {
 
 
     @Override
-    public void deploy() {
+    public void deploy(Map<String, Object> manifest) {
 
     }
 
@@ -14,7 +16,13 @@ public class ExampleResource implements Identifiable, Deployable, Validatable {
     }
 
     @Override
-    public void getId() {
+    public String getId() {
+        return "foo";
+    }
+
+
+    @Override
+    public void reverse() {
 
     }
 }

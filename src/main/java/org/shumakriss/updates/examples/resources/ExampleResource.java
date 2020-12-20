@@ -1,4 +1,9 @@
-package updates;
+package org.shumakriss.updates.examples.resources;
+
+import org.shumakriss.updates.Deployable;
+import org.shumakriss.updates.Identifiable;
+import org.shumakriss.updates.Reversible;
+import org.shumakriss.updates.Validatable;
 
 import java.util.Map;
 

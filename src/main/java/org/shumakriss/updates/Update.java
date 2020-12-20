@@ -5,24 +5,19 @@ import java.util.Map;
 
 public abstract class Update {
 
-    static void validateManifest(Map<String, Object> manifest) {
+    public static boolean validateManifest(Map<String, Object> manifest) {
         for (Object object : manifest.values())
             if (object instanceof Validatable)
                 if (!((Validatable) object).isValid())
-                    return;
-        return;
+                    return false;
+        return true;
     }
 
-    void preDeploy(Map<String, Object> manifest) {
-        validateManifest(manifest);
-    }
+    public abstract boolean preDeploy(Map<String, Object> manifest);
 
-    void postDeploy(Map<String, Object> manifest) {
-        validateManifest(manifest);
-    }
+    public abstract void postDeploy(Map<String, Object> manifest);
 
-    abstract void deploy(Map<String, Object> manifest);
+    public abstract void deploy(Map<String, Object> manifest);
 
-    abstract Map<String, Object> updateManifest(Map<String, Object> manifest);
-
+    public abstract Map<String, Object> updateManifest(Map<String, Object> manifest);
 }

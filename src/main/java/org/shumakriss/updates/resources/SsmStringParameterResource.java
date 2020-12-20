@@ -2,13 +2,13 @@ package org.shumakriss.updates.resources;
 
 import org.shumakriss.updates.Deployable;
 import org.shumakriss.updates.Identifiable;
+import org.shumakriss.updates.Validatable;
 import software.amazon.awssdk.services.ssm.SsmClient;
-import software.amazon.awssdk.services.ssm.model.ParameterType;
-import software.amazon.awssdk.services.ssm.model.PutParameterRequest;
+import software.amazon.awssdk.services.ssm.model.*;
 
 import java.util.Map;
 
-public class SsmStringParameterResource implements Identifiable, Deployable {
+public class SsmStringParameterResource implements Identifiable, Deployable, Validatable {
     SsmClient ssmClient;
     String key;
     String value;
@@ -19,9 +19,17 @@ public class SsmStringParameterResource implements Identifiable, Deployable {
         this.value = value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public String getId() {
-        return "AWS_SSM_PARAMETER" + key;
+        return "AWS_SSM_PARAMETER_" + key;
+    }
+
+    public static String getId(String key) {
+        return "AWS_SSM_PARAMETER_" + key;
     }
 
     @Override
@@ -35,34 +43,24 @@ public class SsmStringParameterResource implements Identifiable, Deployable {
         ssmClient.putParameter(putParameterRequest);
     }
 
-//    private int getDeployedVersion() {
-//
-//        try {
-//            GetParameterRequest parameterRequest = GetParameterRequest.builder()
-//                    .name(versionParameterKey)
-//                    .build();
-//
-//            GetParameterResponse parameterResponse = ssmClient.getParameter(parameterRequest);
-//            String version = parameterResponse.parameter().value();
-//            if (version == null) {
-//                return 0;
-//            } else {
-//                return Integer.parseInt(version);
-//            }
-//
-//        } catch (ParameterNotFoundException parameterNotFoundException) {
-//            return 0;
-//        }
-//    }
-//
-//    private void setVersion() {
-//        PutParameterRequest putParameterRequest = PutParameterRequest.builder()
-//                .name(versionParameterKey)
-//                .type(ParameterType.STRING)
-//                .value(String.valueOf(versionIndex))
-//                .overwrite(true)
-//                .build();
-//        ssmClient.putParameter(putParameterRequest);
-//    }
+    public String getDeployedValue() {
+        try {
+            GetParameterRequest parameterRequest = GetParameterRequest.builder()
+                    .name(key)
+                    .build();
+
+            GetParameterResponse parameterResponse = ssmClient.getParameter(parameterRequest);
+            String responseValue = parameterResponse.parameter().value();
+            return responseValue;
+        } catch (ParameterNotFoundException parameterNotFoundException) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isValid() {
+        String deployedValue = getDeployedValue();
+        return deployedValue == value;
+    }
 
 }

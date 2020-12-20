@@ -12,18 +12,19 @@ public class UpdateManager {
 
 
     public void add(Update update) {
-        currentManifest = update.updateManifest(currentManifest);
         updateList.add(update);
     }
 
     public void deploy() {
-        if (updateList.size() == 0)
-            return;
-
-        Update currentUpdate = updateList.get(updateList.size() - 1);
-        currentUpdate.preDeploy(currentManifest);
-        currentUpdate.deploy(currentManifest);
-        currentUpdate.postDeploy(currentManifest);
+        for (Update update : updateList){
+            if (!update.preDeploy(currentManifest)) {
+                currentManifest = update.updateManifest(currentManifest);
+            } else {
+                update.deploy(currentManifest);
+                currentManifest = update.updateManifest(currentManifest);
+                update.postDeploy(currentManifest);
+            }
+        }
     }
 
 }

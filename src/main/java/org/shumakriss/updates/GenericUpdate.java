@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GenericUpdate extends Update implements Deployable, Reversible {
+public abstract class GenericUpdate extends Update implements Deployable, Reversible {
 
     List<Object> additionalResources = new ArrayList<>();
     List<Object> removedResources = new ArrayList<>();
@@ -21,7 +21,7 @@ public class GenericUpdate extends Update implements Deployable, Reversible {
     }
 
     @Override
-    Map<String, Object> updateManifest(Map<String, Object> manifest) {
+    public Map<String, Object> updateManifest(Map<String, Object> manifest) {
         for (Object resource : additionalResources)
             if (resource instanceof Identifiable)
                 manifest.put(((Identifiable) resource).getId(), resource);
@@ -45,5 +45,9 @@ public class GenericUpdate extends Update implements Deployable, Reversible {
 
     public void removeResource(Identifiable resource) {
         this.removedResources.add(resource);
+    }
+
+    public void postDeploy(Map<String, Object> manifest) {
+        validateManifest(manifest);
     }
 }

@@ -1,4 +1,4 @@
-package org.shumakriss.updates;
+package org.shumakriss.changesets.aws;
 
 import software.amazon.awssdk.services.ssm.SsmClient;
 
@@ -11,7 +11,7 @@ public class AwsClientContext {
         }
     }
 
-    public SsmClient getSsmClient(){
-        return this.ssmClient;
+    public SsmClient getSsmClient() {
+        return ssmClient;
     }
 }

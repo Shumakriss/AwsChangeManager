@@ -1,6 +1,10 @@
-import org.shumakriss.myapp.updates.*;
-import org.shumakriss.updates.AwsClientContext;
-import org.shumakriss.updates.UpdateManager;
+import myapp.changesets.ChangeSet00000001;
+import myapp.changesets.ChangeSet00000002;
+import org.shumakriss.changesets.App;
+import org.shumakriss.changesets.Version;
+import org.shumakriss.changesets.VersionStore;
+import org.shumakriss.changesets.aws.AwsClientContext;
+import org.shumakriss.changesets.aws.AwsSsmVersionStore;
 import software.amazon.awssdk.services.ssm.SsmClient;
 
 public class Main {
@@ -9,15 +13,14 @@ public class Main {
         AwsClientContext awsClientContext = new AwsClientContext();
         awsClientContext.add(SsmClient.builder().build());
 
-        UpdateManager updateManager = new UpdateManager();
-        updateManager.add(new Version0001Update(awsClientContext));
-        updateManager.add(new Version0002Update(awsClientContext));
-        updateManager.add(new Version0003Update(awsClientContext));
-        updateManager.add(new Version0004Update(awsClientContext));
-        updateManager.add(new Version0005Update(awsClientContext));
-        updateManager.add(new Version0006Update(awsClientContext));
-        updateManager.add(new Version0007Update(awsClientContext));
-        updateManager.add(new Version0008Update(awsClientContext));
-        updateManager.deploy();
+        VersionStore versionStore = new AwsSsmVersionStore(awsClientContext.getSsmClient(), "ChangeSetTestKey");
+        App app = new App(versionStore);
+
+        app.addVersionChangeSet(new Version("0.0.1"), new ChangeSet00000001());
+        app.addVersionChangeSet(new Version("0.0.2"), new ChangeSet00000002());
+
+        app.update();
     }
+
+
 }
